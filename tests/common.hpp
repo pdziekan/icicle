@@ -32,9 +32,9 @@ using boost::units::quantity;
   cerr << " info: " << msg << endl; \
 }
 
-string zeropad(int n)
+string zeropad(int n, int w=3)
 {
   std::ostringstream tmp;
-  tmp << std::setw(3) << std::setfill('0') << n;
+  tmp << std::setw(w) << std::setfill('0') << n;
   return tmp.str();
 }

@@ -1,3 +1,0 @@
-# + Options ExecCGI for this directory
-AddHandler cgi-script .cgi
-

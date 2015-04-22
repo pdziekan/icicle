@@ -22,6 +22,7 @@ install:
     - cd libmpdataxx
     - mkdir build
     - cd build
+    - if [[ $CXX == 'clang++' ]]; then cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../; fi # Travis default is not the packaged     one
     - cmake -DCMAKE_BUILD_TYPE=Release ../
     - sudo cmake -P cmake_install.cmake
 
@@ -31,6 +32,7 @@ install:
     - cd libcloudphxx
     - mkdir build
     - cd build
+    - if [[ $CXX == 'clang++' ]]; then cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../; fi # Travis default is not the packaged     one
     - cmake -DCMAKE_BUILD_TYPE=Release ../
     - make
     - sudo make install
@@ -39,6 +41,7 @@ script:
     - cd ../../icicle
     - mkdir build
     - cd build
+    - if [[ $CXX == 'clang++' ]]; then cmake -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../; fi # Travis default is not the packaged     one
     - cmake -DCMAKE_BUILD_TYPE=Debug ../
     - make
     - cmake -DCMAKE_BUILD_TYPE=Release ../

@@ -1,2 +1,0 @@
-add_subdirectory(8icmw_case1)
-add_subdirectory(8icmw_case1_chem)

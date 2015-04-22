@@ -81,7 +81,7 @@ std::cout << "# " << micro << " " << backend << " " << env << " " << sd_conc << 
 	      cmd 
 		<< env << " "
 		<< av[1] 
-		<< "/src/icicle --outfile=/dev/null" 
+		<< "/src/icicle --outdir=/dev/null" 
 		<< " --outfreq=" << nt * mlt << " --nt=" << nt * mlt
 		<< " --micro=" << micro << " " << backend << " " << sd_conc << " " << proc.at(micro).at(prcs);  
 

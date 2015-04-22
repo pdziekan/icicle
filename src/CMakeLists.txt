@@ -20,7 +20,7 @@ add_executable(icicle icicle.cpp)
 
 # TODO: target_compile_options() // added to CMake on Jun 3rd 2013
 
-find_package(Boost COMPONENTS thread iostreams system timer program_options REQUIRED)
+find_package(Boost COMPONENTS thread iostreams system timer program_options filesystem REQUIRED)
 target_link_libraries(icicle ${Boost_LIBRARIES})
 
 #TODO: check if it's there

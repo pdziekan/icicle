@@ -29,7 +29,7 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
   // helper methods
   void diag()
   {
-    assert(this->mem->rank() == 0);
+    assert(this->rank == 0);
 
     // recording super-droplet concentration per grid cell 
     prtcls->diag_sd_conc();
@@ -88,23 +88,6 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
     return tmp.str();
   }
 
-  void setup_aux_helper(
-    const std::string pfx, 
-    const outmom_t<real_t> &outmoms
-  )
-  {
-    // TODO: attributes incl. units?
-    int rng = 0; // note: same numbering for rd and rw 
-    for (auto &rng_moms : outmoms)
-    {
-      for (auto &mom : rng_moms.second)
-      {
-	this->setup_aux(aux_name(pfx, rng, mom)); 
-      }
-      ++rng;
-    }
-  }
-
   protected:
 
   bool get_rain() { return params.cloudph_opts.coal && params.cloudph_opts.sedi; }
@@ -120,7 +103,7 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
     parent_t::hook_ante_loop(nt); 
 
     // TODO: barrier?
-    if (this->mem->rank() == 0) 
+    if (this->rank == 0) 
     {
       assert(params.backend != -1);
       assert(params.dt != 0); 
@@ -142,10 +125,6 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
         (libcloudphxx::lgrngn::backend_t)params.backend, 
         params.cloudph_opts_init
       ));
-
-      setup_aux_helper("rd", params.out_dry); 
-      setup_aux_helper("rw", params.out_wet); 
-      this->setup_aux("sd_conc"); 
 
       {
         using libmpdataxx::arakawa_c::h;
@@ -175,7 +154,7 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
 
     this->mem->barrier();
 
-    if (this->mem->rank() == 0) 
+    if (this->rank == 0) 
     {
       // assuring previous async step finished ...
 #if defined(STD_FUTURE_WORKS)
@@ -260,7 +239,7 @@ class kin_cloud_2d_lgrngn : public kin_cloud_2d_common<ct_params_t>
     parent_t(args, p),
     params(p)
   {
-    // delaying any initialisation to ante_loop as rank() does not function within ctor!
+    // delaying any initialisation to ante_loop as rank() does not function within ctor! // TODO: not anymore!!!
     // TODO: equip rank() in libmpdata with an assert() checking if not in serial block
   }  
 };

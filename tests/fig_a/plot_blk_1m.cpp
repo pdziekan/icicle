@@ -9,7 +9,7 @@ int main(int ac, char** av)
 
   std::string 
     dir = string(av[1]) + "/tests/fig_a/",
-    h5  = dir + "out_blk_1m.h5";
+    h5  = dir + "out_blk_1m";
 
   auto n = h5n(h5);
 
@@ -18,21 +18,21 @@ int main(int ac, char** av)
     for (auto &plt : std::set<std::string>({"rc", "rr"}))
     {   
       Gnuplot gp;
-      init(gp, h5 + ".plot/" + plt + "/" + zeropad(at) + ".svg", 1, 1, n); 
+      init(gp, h5 + ".plot/" + plt + "/" + zeropad(at * n["outfreq"]) + ".svg", 1, 1, n); 
 
       if (plt == "rc")
       {
-	auto rc = h5load(h5, "rc", at) * 1e3;
-	gp << "set title 'cloud water mixing ratio r_c [g/kg]'\n";  // TODO: -> multiply by density to compare with SD
+	auto rc = h5load(h5, "rc", at * n["outfreq"]) * 1e3;
+	gp << "set title 'cloud water mixing ratio r_c [g/kg]'\n";
 	gp << "set cbrange [0:1.5]\n";
 	plot(gp, rc);
       }
 
       if (plt == "rr")
       {
-	auto rr = h5load(h5, "rr", at) * 1e3;
+	auto rr = h5load(h5, "rr", at * n["outfreq"]) * 1e3;
 	gp << "set logscale cb\n";
-	gp << "set title 'rain water mixing ratio r_r [g/kg]'\n"; // TODO: -> multiply by density to compare with SD
+	gp << "set title 'rain water mixing ratio r_r [g/kg]'\n";
 	gp << "set cbrange [1e-2:1]\n";
 	plot(gp, rr);
       }

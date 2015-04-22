@@ -23,14 +23,14 @@ namespace setup = icmw8_case1;
 
 // model run logic - the same for any microphysics
 template <class solver_t>
-void run(int nx, int nz, int nt, const std::string &outfile, const int &outfreq, int spinup)
+void run(int nx, int nz, int nt, const std::string &outdir, const int &outfreq, int spinup)
 {
   // instantiation of structure containing simulation parameters
   typename solver_t::rt_params_t p;
 
   // output and simulation parameters
   p.grid_size = {nx, nz};
-  p.outfile = outfile;
+  p.outdir = outdir;
   p.outfreq = outfreq;
   p.spinup = spinup;
   setup::setopts(p, nx, nz);
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
       ("nx", po::value<int>()->default_value(76) , "grid cell count in horizontal")
       ("nz", po::value<int>()->default_value(76) , "grid cell count in vertical")
       ("nt", po::value<int>()->default_value(3600) , "timestep count")
-      ("outfile", po::value<std::string>(), "output file name (netCDF-compatible HDF5)")
+      ("outdir", po::value<std::string>(), "output file name (netCDF-compatible HDF5)")
       ("outfreq", po::value<int>(), "output rate (timestep interval)")
       ("spinup", po::value<int>()->default_value(2400) , "number of initial timesteps during which rain formation is to be turned off")
       ("help", "produce a help message (see also --micro X --help)")
@@ -97,14 +97,14 @@ int main(int argc, char** argv)
     // checking if all required options present
     po::notify(vm); 
     
-    // handling outfile && outfreq
-    std::string outfile; 
+    // handling outdir && outfreq
+    std::string outdir; 
     int outfreq;
     if (!vm.count("help"))
     {
-      if (!vm.count("outfile")) BOOST_THROW_EXCEPTION(po::required_option("outfile"));
+      if (!vm.count("outdir")) BOOST_THROW_EXCEPTION(po::required_option("outdir"));
       if (!vm.count("outfreq")) BOOST_THROW_EXCEPTION(po::required_option("outfreq"));
-      outfile = vm["outfile"].as<std::string>();
+      outdir = vm["outdir"].as<std::string>();
       outfreq = vm["outfreq"].as<int>();
     }
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
         struct ix { enum {th, rv, rc, rr}; };
         enum { hint_norhs = opts::bit(ix::th) | opts::bit(ix::rv) }; // only through adjustments
       };
-      run<kin_cloud_2d_blk_1m<ct_params_t>>(nx, nz, nt, outfile, outfreq, spinup);
+      run<kin_cloud_2d_blk_1m<ct_params_t>>(nx, nz, nt, outdir, outfreq, spinup);
     }
     else
     if (micro == "blk_2m")
@@ -146,7 +146,7 @@ int main(int argc, char** argv)
             0;
 	}
       };
-      run<kin_cloud_2d_blk_2m<ct_params_t>>(nx, nz, nt, outfile, outfreq, spinup);
+      run<kin_cloud_2d_blk_2m<ct_params_t>>(nx, nz, nt, outdir, outfreq, spinup);
     }
     else 
     if (micro == "lgrngn")
@@ -157,7 +157,7 @@ int main(int argc, char** argv)
 	struct ix { enum {th, rv}; };
         enum { hint_norhs = opts::bit(ix::th) | opts::bit(ix::rv) }; // only through adjustments
       };
-      run<kin_cloud_2d_lgrngn<ct_params_t>>(nx, nz, nt, outfile, outfreq, spinup);
+      run<kin_cloud_2d_lgrngn<ct_params_t>>(nx, nz, nt, outdir, outfreq, spinup);
     }
     else BOOST_THROW_EXCEPTION(
       po::validation_error(
